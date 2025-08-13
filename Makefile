@@ -39,18 +39,18 @@ endif
 
 %_red.o: dep = $(shell tools/scan_includes $(@D)/$*.asm)
 $(pokered_obj): %_red.o: %.asm $$(dep)
-	rgbasm -D _RED -h -o $@ $*.asm
+	rgbds/rgbasm -D _RED -h -o $@ $*.asm
 
 %_blue.o: dep = $(shell tools/scan_includes $(@D)/$*.asm)
 $(pokeblue_obj): %_blue.o: %.asm $$(dep)
-	rgbasm -D _BLUE -h -o $@ $*.asm
+	rgbds/rgbasm -D _BLUE -h -o $@ $*.asm
 
 pokered_opt  = -jsv -k 01 -l 0x33 -m 0x13 -p 0 -r 03 -t "POKEMON RED"
 pokeblue_opt = -jsv -k 01 -l 0x33 -m 0x13 -p 0 -r 03 -t "POKEMON BLUE"
 
 %.gbc: $$(%_obj)
-	rgblink -d -n $*.sym -l pokered.link -o $@ $^
-	rgbfix $($*_opt) $@
+	rgbds/rgblink -d -n $*.sym -l pokered.link -o $@ $^
+	rgbds/rgbfix $($*_opt) $@
 	sort $*.sym -o $*.sym
 
 gfx/blue/intro_purin_1.2bpp: rgbgfx += -h
@@ -67,11 +67,11 @@ gfx/tilesets/%.2bpp: tools/gfx += --trim-whitespace
 %.png: ;
 
 %.2bpp: %.png
-	rgbgfx $(rgbgfx) -o $@ $<
+	rgbds/rgbgfx $(rgbgfx) -o $@ $<
 	$(if $(tools/gfx),\
 		tools/gfx $(tools/gfx) -o $@ $@)
 %.1bpp: %.png
-	rgbgfx -d1 $(rgbgfx) -o $@ $<
+	rgbds/rgbgfx -d1 $(rgbgfx) -o $@ $<
 	$(if $(tools/gfx),\
 		tools/gfx $(tools/gfx) -d1 -o $@ $@)
 %.pic:  %.2bpp
